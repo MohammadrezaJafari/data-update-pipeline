@@ -4,6 +4,7 @@ from airflow import DAG
 # Operators; we need this to operate!
 from airflow.operators.bash_operator import BashOperator
 from airflow.utils.dates import days_ago
+
 # These args will get passed on to each operator
 # You can override them on a per-task basis during operator initialization
 default_args = {
@@ -79,7 +80,6 @@ deploy_valhalla_teh2 = BashOperator(
     dag=dag,
 )
 
-
 generate_traffic_data = BashOperator(
     task_id='generate_traffic_data',
     depends_on_past=False,
@@ -87,9 +87,6 @@ generate_traffic_data = BashOperator(
     retries=3,
     dag=dag,
 )
-
-
-
 
 dag.doc_md = __doc__
 
@@ -137,5 +134,5 @@ generate_sauron >> prepare_sharedsreets_data >> [prepare_sharedsreets_tiles, pre
 prepare_sharedsreets_tiles >> prepare_valhalla_data >> [deploy_valhalla_teh1, deploy_valhalla_teh2]
 
 prepare_sharedsreets_tiles >> generate_traffic_data >> update_central_data_repository
-
+generate_cluster_label >> update_central_data_repository
 # prepare_sharedsreets_tiles >> generate_cluster_label >> generate_cluster_label
