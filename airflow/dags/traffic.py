@@ -4,6 +4,7 @@ from airflow import DAG
 # Operators; we need this to operate!
 from airflow.operators.bash_operator import BashOperator
 from airflow.utils.dates import days_ago
+
 # These args will get passed on to each operator
 # You can override them on a per-task basis during operator initialization
 default_args = {
@@ -37,50 +38,49 @@ dag = DAG(
 )
 
 # t1, t2 and t3 are examples of tasks created by instantiating operators
-t1 = BashOperator(
+generate_sauron = BashOperator(
     task_id='generate_sauron',
     bash_command='date',
     dag=dag,
 )
 
-t2 = BashOperator(
+prepare_sharedsreets_data = BashOperator(
     task_id='prepare_sharedsreets_data',
     bash_command='date',
     dag=dag,
 )
 
-t2_1 = BashOperator(
+prepare_sharedsreets_tiles = BashOperator(
     task_id='prepare_sharedsreets_tiles',
     bash_command='date',
     dag=dag,
 )
 
-t2_2 = BashOperator(
+prepare_sharedsreets_tiles_mmc = BashOperator(
     task_id='prepare_sharedsreets_tiles_mmc',
     bash_command='date',
     dag=dag,
 )
 
-t3 = BashOperator(
+prepare_valhalla_data = BashOperator(
     task_id='prepare_valhalla_data',
     bash_command='date',
     dag=dag,
 )
 
-t3_1 = BashOperator(
+deploy_valhalla_teh1 = BashOperator(
     task_id='deploy_valhalla_teh1',
     bash_command='date',
     dag=dag,
 )
 
-t3_2 = BashOperator(
-    task_id='deploy_valhalla_teh1',
+deploy_valhalla_teh2 = BashOperator(
+    task_id='deploy_valhalla_teh2',
     bash_command='date',
     dag=dag,
 )
 
-
-t4 = BashOperator(
+generate_traffic_data = BashOperator(
     task_id='generate_traffic_data',
     depends_on_past=False,
     bash_command='sleep 5',
@@ -88,12 +88,9 @@ t4 = BashOperator(
     dag=dag,
 )
 
-
-
-
 dag.doc_md = __doc__
 
-t1.doc_md = """\
+generate_sauron.doc_md = """\
 #### Task Documentation
 You can document your task using the attributes `doc_md` (markdown),
 `doc` (plain text), `doc_rst`, `doc_json`, `doc_yaml` which gets
@@ -108,7 +105,7 @@ templated_command = """
 {% endfor %}
 """
 
-t5 = BashOperator(
+update_central_data_repository = BashOperator(
     task_id='update_central_data_repository',
     depends_on_past=False,
     bash_command=templated_command,
@@ -116,4 +113,26 @@ t5 = BashOperator(
     dag=dag,
 )
 
-t1 >> t2 >> [t2_1, t2_2] >> t3 >> [t3_1, t3_2]
+generate_cluster_label = BashOperator(
+    task_id='generate_cluster_label',
+    depends_on_past=False,
+    bash_command=templated_command,
+    params={'my_param': 'Parameter I passed in'},
+    dag=dag,
+)
+
+update_central_data_repository = BashOperator(
+    task_id='update_central_data_repository',
+    depends_on_past=False,
+    bash_command=templated_command,
+    params={'my_param': 'Parameter I passed in'},
+    dag=dag,
+)
+
+generate_sauron >> prepare_sharedsreets_data >> [prepare_sharedsreets_tiles, prepare_sharedsreets_tiles_mmc]
+
+prepare_sharedsreets_data >> prepare_valhalla_data >> [deploy_valhalla_teh1, deploy_valhalla_teh2]
+
+prepare_sharedsreets_data >> generate_traffic_data >> update_central_data_repository
+
+prepare_sharedsreets_data >> generate_cluster_label >> generate_cluster_label
