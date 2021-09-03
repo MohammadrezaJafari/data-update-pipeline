@@ -38,18 +38,59 @@ dag = DAG(
 
 # t1, t2 and t3 are examples of tasks created by instantiating operators
 t1 = BashOperator(
-    task_id='generate_sharedsreets',
+    task_id='generate_sauron',
     bash_command='date',
     dag=dag,
 )
 
 t2 = BashOperator(
-    task_id='generate_traffic_master',
+    task_id='prepare_sharedsreets_data',
+    bash_command='date',
+    dag=dag,
+)
+
+t2_1 = BashOperator(
+    task_id='prepare_sharedsreets_tiles',
+    bash_command='date',
+    dag=dag,
+)
+
+t2_2 = BashOperator(
+    task_id='prepare_sharedsreets_tiles_mmc',
+    bash_command='date',
+    dag=dag,
+)
+
+t3 = BashOperator(
+    task_id='prepare_valhalla_data',
+    bash_command='date',
+    dag=dag,
+)
+
+t3_1 = BashOperator(
+    task_id='deploy_valhalla_teh1',
+    bash_command='date',
+    dag=dag,
+)
+
+t3_2 = BashOperator(
+    task_id='deploy_valhalla_teh1',
+    bash_command='date',
+    dag=dag,
+)
+
+
+t4 = BashOperator(
+    task_id='generate_traffic_data',
     depends_on_past=False,
     bash_command='sleep 5',
     retries=3,
     dag=dag,
 )
+
+
+
+
 dag.doc_md = __doc__
 
 t1.doc_md = """\
@@ -67,7 +108,7 @@ templated_command = """
 {% endfor %}
 """
 
-t3 = BashOperator(
+t5 = BashOperator(
     task_id='update_central_data_repository',
     depends_on_past=False,
     bash_command=templated_command,
@@ -75,4 +116,4 @@ t3 = BashOperator(
     dag=dag,
 )
 
-t1 >> [t2, t3]
+t1 >> t2 >> [t2_1, t2_2] >> t3 >> [t3_1, t3_2]
