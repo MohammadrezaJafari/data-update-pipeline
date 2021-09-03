@@ -136,6 +136,6 @@ generate_sauron >> prepare_sharedsreets_data >> [prepare_sharedsreets_tiles, pre
 
 prepare_sharedsreets_tiles >> prepare_valhalla_data >> [deploy_valhalla_teh1, deploy_valhalla_teh2]
 
-# prepare_sharedsreets_data >> generate_traffic_data >> update_central_data_repository
+prepare_sharedsreets_tiles >> generate_traffic_data >> update_central_data_repository
 
-# prepare_sharedsreets_data >> generate_cluster_label >> generate_cluster_label
+# prepare_sharedsreets_tiles >> generate_cluster_label >> generate_cluster_label
