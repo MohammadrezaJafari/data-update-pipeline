@@ -129,7 +129,4 @@ update_central_data_repository = BashOperator(
     dag=dag,
 )
 
-generate_sauron >> prepare_sharedsreets_data >> [prepare_sharedsreets_tiles, prepare_sharedsreets_tiles_mmc]\
-    >> prepare_valhalla_data >> [deploy_valhalla_teh1, deploy_valhalla_teh2] \
-    >> generate_traffic_data >> update_central_data_repository \
-    >> generate_cluster_label >> generate_cluster_label
+generate_sauron >> prepare_sharedsreets_data >> [prepare_sharedsreets_tiles, prepare_sharedsreets_tiles_mmc]
